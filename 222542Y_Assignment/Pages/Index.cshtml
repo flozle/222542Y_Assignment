@@ -1,0 +1,37 @@
+﻿
+@page
+@using Microsoft.AspNetCore.Identity
+@using WebApp_Core_Identity.Model;
+@using _222542Y_Assignment.Core;
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @{
+        if (SignInManager.IsSignedIn(User))
+        {
+            var user = await UserManager.GetUserAsync(User);
+           // show user info
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                <p>Hi @User.Identity.Name!</p>
+                <p>Your first name is @EncodingClass.Base64Decode(user.FirstName)</p>
+                    <p>Your last name is @EncodingClass.Base64Decode(user.LastName)</p>
+                <p>Your email is @user.Email</p>
+                <p>Your phone number is @user.PhoneNumber</p>
+                <p>Your Credit card is @Encryption.Decrypt(user.CreditCard)</p>
+                <p>Your billing address is @user.BillingAddress</p>
+                <p>Your shipping address is @user.ShippingAddress</p>
+                </li>
+            </ul>
+        }
+    }
+</div>

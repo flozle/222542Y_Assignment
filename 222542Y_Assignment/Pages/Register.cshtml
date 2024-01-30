@@ -1,0 +1,191 @@
+﻿@page
+@model _222542Y_Assignment.Pages.RegisterModel
+@using Microsoft.Extensions.Options
+@using Authentication.Model
+@inject IOptions<GoogleCaptchaConfig> GoogleCaptchaConfig
+
+@{
+	ViewData["Title"] = "Register";
+}
+
+
+
+<div class="container mt-5">
+
+	<div class="row justify-content-center align-items-center">
+
+		<div class="col-sm-12 col-md-12 col-lg-4">
+			<h1 class="mb-3">Register </h1>
+
+			<form method="post">
+				<div asp-validation-summary="All" class="text-danger"></div>
+
+				<input type="hidden" id="LoginViewModelToken" asp-for="RModel.Token" />
+
+				@* First name *@
+				<div class="mb-3">
+					<label class="form-label" asp-for="RModel.FirstName">First Name</label>
+					<input type="Text" asp-for="RModel.FirstName" class="form-control" />
+					<span asp-validaton-for="RModel.FirstName" class="text-danger"></span>
+				</div>
+
+				@* Last name *@
+				<div class="mb-3">
+					<label class="form-label" asp-for="RModel.LastName">Last Name</label>
+					<input type="Text" asp-for="RModel.LastName" class="form-control" />
+					<span asp-validaton-for="RModel.LastName" class="text-LastName"></span>
+				</div>
+
+				@* Credit card No *@
+				<div class="mb-3">
+					<label class="form-label" asp-for="RModel.CreditCard">Credit Card</label>
+					<input type="number" asp-for="RModel.CreditCard" class="form-control" />
+					<span asp-validaton-for="RModel.CreditCard" class="text-CreditCard"></span>
+				</div>
+
+				@* Mobile no *@
+				<div class="mb-3">
+					<label class="form-label" asp-for="RModel.PhoneNumber">Phone Number</label>
+					<input type="number" asp-for="RModel.PhoneNumber" class="form-control" />
+					<span asp-validaton-for="RModel.PhoneNumber" class="text-PhoneNumber"></span>
+				</div>
+
+				@* Billing address *@
+				<div class="mb-3">
+					<label class="form-label" asp-for="RModel.BillingAddress">Billing Address</label>
+					<input type="Text" asp-for="RModel.BillingAddress" class="form-control" />
+					<span asp-validaton-for="RModel.BillingAddress" class="text-danger"></span>
+				</div>
+
+				@* Shippping address *@
+				<div class="mb-3">
+					<label class="form-label" asp-for="RModel.ShippingAddress">Shipping Address</label>
+					<input type="Text" asp-for="RModel.ShippingAddress" class="form-control" />
+					<span asp-validaton-for="RModel.ShippingAddress" class="text-danger"></span>
+				</div>
+
+				@* email *@
+				<div class="mb-3">
+					<label class="form-label" asp-for="RModel.Email">Email Address</label>
+					<input type="email" asp-for="RModel.Email" class="form-control" />
+					<span asp-validaton-for="RModel.Email" class="text-danger"></span>
+				</div>
+
+				@* password *@
+				<div class="mb-3">
+					<label class="form-label" asp-for="RModel.Password">Password</label>
+					<input type="password" id="passwordInput" asp-for="RModel.Password" class="form-control" />
+					<span asp-validaton-for="RModel.Password" class="text-danger"></span>
+					<!-- Password strength meter -->
+					<div id="passwordStrength" class="mt-2"></div>
+				</div>
+
+				@* confrim password *@
+				<div class="mb-3">
+					<label class="form-label" asp-for="RModel.ConfirmPassword">Confirm Password</label>
+					<input type="password" asp-for="RModel.ConfirmPassword" class="form-control" />
+					<span asp-validaton-for="RModel.ConfirmPassword" class="text-danger"></span>
+				</div>
+
+				@* Photo to be added *@
+
+
+				<div class="mb-3">
+					<button type="submit" class="btn btn-primary">Register</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script src="https://www.google.com/recaptcha/api.js?render=@GoogleCaptchaConfig.Value.SiteKey"></script>
+<script>
+	function test() {
+		grecaptcha.ready(function () {
+			grecaptcha.execute('@GoogleCaptchaConfig.Value.SiteKey', { action: 'submit' }).then(function (token) {
+				// Add your logic to submit to your backend server here.
+				console.log(token)
+				document.getElementById("LoginViewModelToken").value = token;
+			});
+		})
+	}
+
+	setInterval(test, 115000);
+
+	window.onload = function () {
+		test();
+	};
+</script>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.6.2.js">
+</script>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.js">
+</script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.6.2.js"></script>
+<script>
+	$(document).ready(function () {
+		$('#passwordInput').keyup(function () {
+			var password = $(this).val();
+			var strength = calculatePasswordStrength(password);
+
+			// Display password strength
+			displayPasswordStrength(strength);
+		});
+
+		function calculatePasswordStrength(password) {
+			// Implement your password strength calculation logic here
+			// This is a simple example; you may want to use a library for a more robust implementation
+
+			var strength = 0;
+
+			// Example: Check password length
+			if (password.length >= 8) {
+				strength += 1;
+			}
+
+			// Example: Check for uppercase and lowercase letters
+			if (/[a-z]/.test(password) && /[A-Z]/.test(password)) {
+				strength += 1;
+			}
+
+			// Example: Check for numbers
+			if (/\d/.test(password)) {
+				strength += 1;
+			}
+
+			// Example: Check for special characters
+			if (/[\W_]/.test(password)) {
+				strength += 1;
+			}
+
+			return strength;
+		}
+
+		function displayPasswordStrength(strength) {
+			var strengthText = "";
+			switch (strength) {
+				case 0:
+					strengthText = "Very Weak";
+					break;
+				case 1:
+					strengthText = "Weak";
+					break;
+				case 2:
+					strengthText = "Moderate";
+					break;
+				case 3:
+					strengthText = "Strong";
+					break;
+				case 4:
+					strengthText = "Very Strong";
+					break;
+				default:
+					strengthText = "Unknown";
+					break;
+			}
+
+			// Update the strength meter
+			$('#passwordStrength').text('Password Strength: ' + strengthText);
+		}
+	});
+</script>
