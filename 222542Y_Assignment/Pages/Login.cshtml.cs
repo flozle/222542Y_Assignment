@@ -21,11 +21,12 @@ namespace _222542Y_Assignment.Pages
 		[BindProperty]
         public Login LModel { get; set; }
 
-        public LoginModel(SignInManager<User> signInManager, GoogleCaptchaService captchaService, UserDbContext dbContext)
+        public LoginModel(SignInManager<User> signInManager, GoogleCaptchaService captchaService, UserDbContext dbContext, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
         {
             this.signInManager = signInManager;
             _captchaService = captchaService;
 			this.dbContext = dbContext;
+			this.userManager = userManager;
 		}
         public void OnGet()
         {
@@ -42,24 +43,46 @@ namespace _222542Y_Assignment.Pages
 
             if (ModelState.IsValid)
             {
-				var user = await userManager.FindByEmailAsync(LModel.Email);
-
-				if (user != null)
-				{
-					var identityResult = await signInManager.PasswordSignInAsync(LModel.Email, LModel.Password, LModel.RememberMe, lockoutOnFailure: true);
+					var identityResult = await signInManager.PasswordSignInAsync(LModel.Email, LModel.Password, false, lockoutOnFailure: true);
 
 					if (identityResult.Succeeded)
 					{
-						var audit = new AuditLog()
+						var user = await userManager.FindByEmailAsync(LModel.Email);
+						var claims = new List<Claim> { };
+                        var audit = new AuditLog()
 						{
 							Email = LModel.Email,
 							Action = "Login",
 							Timestamp = DateTime.Now
 						};
+						if (LModel.Email == "staff@gmail.com") { 
+						claims = new List<Claim>
+							{
+								new Claim("Department", "HR")
+							};
+						}
+							else
+						{
+							claims = new List<Claim>
+								{
+								};
+						}
+						var i = new ClaimsIdentity(claims, "MyCookieUser");
+						ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(i);
+						await HttpContext.SignInAsync("MyCookieUser", claimsPrincipal);
 						dbContext.AuditLogs.Add(audit);
 						await dbContext.SaveChangesAsync();
-						await userManager.UpdateAsync(user);
-						return RedirectToPage("Index");
+						if (user?.LastPasswordChangedDate.AddMinutes(2) < DateTime.Now)
+						{
+							// Password has expired
+							// Redirect user to change password page
+							return RedirectToPage("PasswordExpired");
+							
+						}
+						else
+						{
+							return RedirectToPage("Index");
+						}
 					}
 
 					// Account lockout
@@ -74,7 +97,6 @@ namespace _222542Y_Assignment.Pages
 					// End of account lockout
 				}
 				//end of account lockout
-			}
             return Page();
         }
     }

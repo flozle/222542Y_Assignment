@@ -1,0 +1,21 @@
+﻿@page
+@model _222542Y_Assignment.Pages.errors._401Model
+@{
+}
+
+
+<div class="container" style="text-align: center;  color: #888;">
+    <h1 style="font-size: 150px; color: #888; margin-bottom: 0px;">401</h1>
+    <p style="font-size: 50px; ">Not Authorized</p>
+    <p>
+        This error happens when request doesn't contain authentication or authorization is refused because of
+        bad credentials.
+    </p>
+    <p>You will be redirected shortly</p>
+</div>
+
+<script>
+    window.setTimeout(function () {
+        window.location.href = 'https://localhost:7275';
+    }, 4000);
+</script>

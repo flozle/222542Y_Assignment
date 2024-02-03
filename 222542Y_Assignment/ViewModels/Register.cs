@@ -41,9 +41,46 @@ namespace _222542Y_Assignment.ViewModels
 		[DataType(DataType.Password)]
 		[Compare(nameof(Password), ErrorMessage = "Password and confirmation password does not match")]
 		public string ConfirmPassword { get; set; }
-		//to be added photo
+		[Required]
+		[DataType(DataType.Upload)]
+		[AllowedExtensions(new string[] { ".jpg" }, ErrorMessage = "Only .jpg files allowed")]
+		public IFormFile Photo { get; set; }
 
 		//captcha
 		public string Token { get; set; }
 	}
+	public class AllowedExtensionsAttribute : ValidationAttribute
+	{
+		private readonly string[] _extensions;
+
+		public AllowedExtensionsAttribute(string[] extensions)
+		{
+			_extensions = extensions;
+		}
+
+		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+		{
+			if (value == null)
+				return ValidationResult.Success;
+
+			IFormFile file = value as IFormFile;
+			string extension = System.IO.Path.GetExtension(file.FileName);
+
+			if (file != null)
+			{
+				if (!_extensions.Contains(extension.ToLower()))
+				{
+					return new ValidationResult(GetErrorMessage());
+				}
+			}
+
+			return ValidationResult.Success;
+		}
+
+		public string GetErrorMessage()
+		{
+			return $"This file extension is not allowed!";
+		}
+	}
+
 }

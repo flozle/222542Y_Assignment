@@ -11,10 +11,6 @@ namespace WebApp_Core_Identity.Model
 	{
 		private readonly IConfiguration _configuration;
 
-        public UserDbContext()
-        {
-        }
-
         public UserDbContext(IConfiguration configuration)
 		{
 			_configuration = configuration;
@@ -34,7 +30,11 @@ namespace WebApp_Core_Identity.Model
 		public string PhoneNumber { get; set; }
 		public string BillingAddress { get; set; }
 		public string ShippingAddress { get; set; }
-		//to be added photo
+		public string Photo { get; set; }
+		public DateTime LastPasswordChangedDate { get; set; }
+		public string OldPassword1 { get; set; }
+		public string OldPassword2 { get; set; }
+		public string OldPassword3 { get; set; }
 	}
 
 	public class AuditLog

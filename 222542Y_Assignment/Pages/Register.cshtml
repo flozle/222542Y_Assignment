@@ -17,7 +17,7 @@
 		<div class="col-sm-12 col-md-12 col-lg-4">
 			<h1 class="mb-3">Register </h1>
 
-			<form method="post">
+			<form method="post" enctype="multipart/form-data">
 				<div asp-validation-summary="All" class="text-danger"></div>
 
 				<input type="hidden" id="LoginViewModelToken" asp-for="RModel.Token" />
@@ -26,56 +26,56 @@
 				<div class="mb-3">
 					<label class="form-label" asp-for="RModel.FirstName">First Name</label>
 					<input type="Text" asp-for="RModel.FirstName" class="form-control" />
-					<span asp-validaton-for="RModel.FirstName" class="text-danger"></span>
+					<span asp-validation-for="RModel.FirstName" class="text-danger"></span>
 				</div>
 
 				@* Last name *@
 				<div class="mb-3">
 					<label class="form-label" asp-for="RModel.LastName">Last Name</label>
 					<input type="Text" asp-for="RModel.LastName" class="form-control" />
-					<span asp-validaton-for="RModel.LastName" class="text-LastName"></span>
+					<span asp-validation-for="RModel.LastName" class="text-danger"></span>
 				</div>
 
 				@* Credit card No *@
 				<div class="mb-3">
 					<label class="form-label" asp-for="RModel.CreditCard">Credit Card</label>
 					<input type="number" asp-for="RModel.CreditCard" class="form-control" />
-					<span asp-validaton-for="RModel.CreditCard" class="text-CreditCard"></span>
+					<span asp-validation-for="RModel.CreditCard" class="text-danger"></span>
 				</div>
 
 				@* Mobile no *@
 				<div class="mb-3">
 					<label class="form-label" asp-for="RModel.PhoneNumber">Phone Number</label>
 					<input type="number" asp-for="RModel.PhoneNumber" class="form-control" />
-					<span asp-validaton-for="RModel.PhoneNumber" class="text-PhoneNumber"></span>
+					<span asp-validation-for="RModel.PhoneNumber" class="text-danger"></span>
 				</div>
 
 				@* Billing address *@
 				<div class="mb-3">
 					<label class="form-label" asp-for="RModel.BillingAddress">Billing Address</label>
 					<input type="Text" asp-for="RModel.BillingAddress" class="form-control" />
-					<span asp-validaton-for="RModel.BillingAddress" class="text-danger"></span>
+					<span asp-validation-for="RModel.BillingAddress" class="text-danger"></span>
 				</div>
 
 				@* Shippping address *@
 				<div class="mb-3">
 					<label class="form-label" asp-for="RModel.ShippingAddress">Shipping Address</label>
 					<input type="Text" asp-for="RModel.ShippingAddress" class="form-control" />
-					<span asp-validaton-for="RModel.ShippingAddress" class="text-danger"></span>
+					<span asp-validation-for="RModel.ShippingAddress" class="text-danger"></span>
 				</div>
 
 				@* email *@
 				<div class="mb-3">
 					<label class="form-label" asp-for="RModel.Email">Email Address</label>
 					<input type="email" asp-for="RModel.Email" class="form-control" />
-					<span asp-validaton-for="RModel.Email" class="text-danger"></span>
+					<span asp-validation-for="RModel.Email" class="text-danger"></span>
 				</div>
 
 				@* password *@
 				<div class="mb-3">
 					<label class="form-label" asp-for="RModel.Password">Password</label>
 					<input type="password" id="passwordInput" asp-for="RModel.Password" class="form-control" />
-					<span asp-validaton-for="RModel.Password" class="text-danger"></span>
+					<span asp-validation-for="RModel.Password" class="text-danger"></span>
 					<!-- Password strength meter -->
 					<div id="passwordStrength" class="mt-2"></div>
 				</div>
@@ -84,10 +84,15 @@
 				<div class="mb-3">
 					<label class="form-label" asp-for="RModel.ConfirmPassword">Confirm Password</label>
 					<input type="password" asp-for="RModel.ConfirmPassword" class="form-control" />
-					<span asp-validaton-for="RModel.ConfirmPassword" class="text-danger"></span>
+					<span asp-validation-for="RModel.ConfirmPassword" class="text-danger"></span>
 				</div>
 
-				@* Photo to be added *@
+				@* Photo *@
+				<div class="mb-3">
+					<label class="form-label" asp-for="RModel.Photo">Photo</label>
+					<input type="file" asp-for="RModel.Photo" class="form-control" />
+					<span asp-validation-for="RModel.Photo" class="text-danger"></span>
+				</div>
 
 
 				<div class="mb-3">
@@ -139,7 +144,7 @@
 			var strength = 0;
 
 			// Example: Check password length
-			if (password.length >= 8) {
+			if (password.length >= 12) {
 				strength += 1;
 			}
 

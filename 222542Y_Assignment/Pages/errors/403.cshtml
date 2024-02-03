@@ -1,0 +1,18 @@
+﻿@page
+@model _222542Y_Assignment.Pages.errors._403Model
+@{
+    ViewData["title"] = "No Authorization";
+}
+
+<div class="container" style="text-align: center;  color: #888;">
+    <h1 style="font-size: 150px; color: #888; margin-bottom: 0px;">403</h1>
+    <p style="font-size: 50px; ">No access to page</p>
+    <p>You have no access to this page.</p>
+    <p>You will be redirected shortly</p>
+</div>
+
+<script>
+    window.setTimeout(function () {
+        window.location.href = 'https://localhost:7275';
+    }, 4000);
+</script>

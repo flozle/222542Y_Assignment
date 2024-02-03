@@ -1,6 +1,7 @@
 using Authentication.Model;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.FileProviders;
 using WebApp_Core_Identity.Model;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +31,27 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
 });
 
+// claims
+builder.Services.AddAuthentication("MyCookieUser").AddCookie("MyCookieUser", options =>
+{
+	options.Cookie.Name = "MyCookieUser";
+	options.AccessDeniedPath = "/errors/403";
+});
+
+//session
+builder.Services.AddSession(options =>
+{
+	options.IOTimeout = TimeSpan.FromMinutes(1);
+	options.Cookie.HttpOnly = true;
+	options.Cookie.IsEssential = true;
+});
+
+builder.Services.AddAuthorization(options =>
+{
+	options.AddPolicy("MustBelongToHRDepartment",
+		policy => policy.RequireClaim("Department", "HR"));
+});
+
 
 var app = builder.Build();
 
@@ -46,12 +68,21 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+//error pages
+app.UseStatusCodePagesWithRedirects("/errors/{0}");
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-//error pages
-app.UseStatusCodePagesWithRedirects("/errors/{0}");
+app.UseSession();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.ContentRootPath, "Uploads")),
+    RequestPath = "/Uploads"
+});
 
 app.MapRazorPages();
 

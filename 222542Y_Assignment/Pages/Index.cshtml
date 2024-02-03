@@ -22,14 +22,15 @@
            // show user info
             <ul class="navbar-nav flex-grow-1">
                 <li class="nav-item">
+                <img src="@user.Photo" alt="Profile Picture" class="img-fluid rounded-circle" style="max-width: 100px; max-height: 100px;" />
                 <p>Hi @User.Identity.Name!</p>
                 <p>Your first name is @EncodingClass.Base64Decode(user.FirstName)</p>
                     <p>Your last name is @EncodingClass.Base64Decode(user.LastName)</p>
                 <p>Your email is @user.Email</p>
                 <p>Your phone number is @user.PhoneNumber</p>
                 <p>Your Credit card is @Encryption.Decrypt(user.CreditCard)</p>
-                <p>Your billing address is @user.BillingAddress</p>
-                <p>Your shipping address is @user.ShippingAddress</p>
+                <p>Your billing address is @EncodingClass.Base64Decode(user.BillingAddress)</p>
+                <p>Your shipping address is @EncodingClass.Base64Decode(user.ShippingAddress)</p>
                 </li>
             </ul>
         }
