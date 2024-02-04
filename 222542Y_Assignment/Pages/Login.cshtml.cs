@@ -17,8 +17,9 @@ namespace _222542Y_Assignment.Pages
 		private GoogleCaptchaService _captchaService { get; }
 		private UserManager<User> userManager { get; }
 		private UserDbContext dbContext { get; }
+        private IHttpContextAccessor _httpContextAccessor { get; }
 
-		[BindProperty]
+        [BindProperty]
         public Login LModel { get; set; }
 
         public LoginModel(SignInManager<User> signInManager, GoogleCaptchaService captchaService, UserDbContext dbContext, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
@@ -27,7 +28,8 @@ namespace _222542Y_Assignment.Pages
             _captchaService = captchaService;
 			this.dbContext = dbContext;
 			this.userManager = userManager;
-		}
+            _httpContextAccessor = httpContextAccessor;
+        }
         public void OnGet()
         {
         }
@@ -55,7 +57,9 @@ namespace _222542Y_Assignment.Pages
 							Action = "Login",
 							Timestamp = DateTime.Now
 						};
-						if (LModel.Email == "staff@gmail.com") { 
+						dbContext.AuditLogs.Add(audit);
+						await dbContext.SaveChangesAsync();
+                    if (LModel.Email == "staff@gmail.com") { 
 						claims = new List<Claim>
 							{
 								new Claim("Department", "HR")
@@ -70,9 +74,11 @@ namespace _222542Y_Assignment.Pages
 						var i = new ClaimsIdentity(claims, "MyCookieUser");
 						ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(i);
 						await HttpContext.SignInAsync("MyCookieUser", claimsPrincipal);
-						dbContext.AuditLogs.Add(audit);
-						await dbContext.SaveChangesAsync();
-						if (user?.LastPasswordChangedDate.AddMinutes(2) < DateTime.Now)
+
+						//session
+						_httpContextAccessor.HttpContext.Session.SetString("ID", Guid.NewGuid().ToString());
+
+                    if (user?.LastPasswordChangedDate.AddMinutes(2) < DateTime.Now)
 						{
 							// Password has expired
 							// Redirect user to change password page

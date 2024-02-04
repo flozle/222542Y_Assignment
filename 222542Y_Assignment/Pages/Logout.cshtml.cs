@@ -15,13 +15,13 @@ namespace _222542Y_Assignment.Pages
 		private readonly SignInManager<User> signInManager;
 		private UserDbContext dbContext { get; }
 		private UserManager<User> userManager { get; }
-        private IHttpContextAccessor contxt { get; }
+        private IHttpContextAccessor _httpContextAccessor { get; }
         public LogoutModel(SignInManager<User> signInManager, UserDbContext dbContext, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
 		{
 			this.signInManager = signInManager;
 			this.dbContext = dbContext;
 			this.userManager = userManager;
-            contxt = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 		public void OnGet()
@@ -38,11 +38,14 @@ namespace _222542Y_Assignment.Pages
 				Timestamp = DateTime.Now
 			};
 			dbContext.AuditLogs.Add(audit);
-            contxt.HttpContext.Session.Clear();
 			await dbContext.SaveChangesAsync();
 
+            _httpContextAccessor.HttpContext.Session.Clear();
+
 			await HttpContext.SignOutAsync("MyCookieUser");
-			await signInManager.SignOutAsync();
+            //session
+            _httpContextAccessor.HttpContext.Session.SetString("ID", Guid.NewGuid().ToString());
+            await signInManager.SignOutAsync();
 			return RedirectToPage("Login");
 		}
 		public async Task<IActionResult> OnPostDontLogoutAsync()

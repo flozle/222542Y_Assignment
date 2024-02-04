@@ -45,7 +45,8 @@ namespace _222542Y_Assignment.Pages
 
             var passwordHash = userManager.PasswordHasher.HashPassword(user, CPModel.NewPassword);
 
-            if (userManager.PasswordHasher.VerifyHashedPassword(user, user.OldPassword3, CPModel.NewPassword) == PasswordVerificationResult.Success || userManager.PasswordHasher.VerifyHashedPassword(user, user.OldPassword2, CPModel.NewPassword) == PasswordVerificationResult.Success)
+            if (userManager.PasswordHasher.VerifyHashedPassword(user, user.OldPassword3, CPModel.NewPassword) == PasswordVerificationResult.Success || 
+				userManager.PasswordHasher.VerifyHashedPassword(user, user.OldPassword2, CPModel.NewPassword) == PasswordVerificationResult.Success)
 			{
 				   ModelState.AddModelError("", "Password cannot be the same as the last 2 passwords");
 			}

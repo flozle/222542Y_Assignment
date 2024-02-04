@@ -9,7 +9,8 @@ namespace _222542Y_Assignment.ViewModels
 		public string OldPassword { get; set; }
 		[Required]
 		[DataType(DataType.Password)]
-		[RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*!])[A-Za-z\d@#$%^&*!]{12,}$", ErrorMessage = "Password must be 8-15 characters long and contain at least 1 lowercase, 1 uppercase, 1 numeric and 1 special character")]
+		[RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*!])[A-Za-z\d@#$%^&*!]{12,}$",
+			ErrorMessage = "Password must be 8-15 characters long and contain at least 1 lowercase, 1 uppercase, 1 numeric and 1 special character")]
 		public string NewPassword { get; set; }
 		[Required]
 		[DataType(DataType.Password)]

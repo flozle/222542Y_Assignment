@@ -25,10 +25,13 @@ builder.Services.Configure<IdentityOptions>(options =>
 	options.Lockout.AllowedForNewUsers = true;
 });
 
-//timeout
-builder.Services.ConfigureApplicationCookie(options =>
+
+//session timeout
+builder.Services.AddSession(options =>
 {
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
+    options.IdleTimeout = TimeSpan.FromSeconds(5);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 
 // claims
@@ -38,13 +41,6 @@ builder.Services.AddAuthentication("MyCookieUser").AddCookie("MyCookieUser", opt
 	options.AccessDeniedPath = "/errors/403";
 });
 
-//session
-builder.Services.AddSession(options =>
-{
-	options.IOTimeout = TimeSpan.FromMinutes(1);
-	options.Cookie.HttpOnly = true;
-	options.Cookie.IsEssential = true;
-});
 
 builder.Services.AddAuthorization(options =>
 {
@@ -64,7 +60,6 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
 app.UseRouting();
 

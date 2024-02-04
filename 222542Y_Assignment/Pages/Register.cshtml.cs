@@ -17,16 +17,18 @@ namespace _222542Y_Assignment.Pages
 		private SignInManager<User> signInManager { get; }
 		private GoogleCaptchaService _captchaService { get;  }
 		private UserDbContext dbContext { get; }
+		private IHttpContextAccessor _httpContextAccessor { get; }
 
 		[BindProperty]
 		public Register RModel { get; set; }
 
-        public RegisterModel(UserManager<User> userManager, SignInManager<User> signInManager, GoogleCaptchaService captchaService, UserDbContext dbContext)
+        public RegisterModel(UserManager<User> userManager, SignInManager<User> signInManager, GoogleCaptchaService captchaService, UserDbContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
 			this.userManager = userManager;
 			this.signInManager = signInManager;
 			_captchaService = captchaService;
 			this.dbContext = dbContext;
+			_httpContextAccessor = httpContextAccessor;
 		}
 
 		//Save data into the database
@@ -71,6 +73,7 @@ namespace _222542Y_Assignment.Pages
                 var result = await userManager.CreateAsync(user, RModel.Password);
 				if (result.Succeeded)
 				{
+					//audit
 					var audit = new AuditLog()
 					{
 						Email = RModel.Email,
@@ -79,6 +82,8 @@ namespace _222542Y_Assignment.Pages
 					};
 					dbContext.AuditLogs.Add(audit);
 					await dbContext.SaveChangesAsync();
+
+					//add claims
 					var claims = new List<Claim> { };
 					if (RModel.Email == "staff@gmail.com")
 					{
@@ -95,7 +100,12 @@ namespace _222542Y_Assignment.Pages
 					}
 					var i = new ClaimsIdentity(claims, "MyCookieUser");
 					ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(i);
-					await signInManager.SignInAsync(user, false);
+
+					//session
+					_httpContextAccessor.HttpContext.Session.SetString("ID", Guid.NewGuid().ToString());
+
+
+                    await signInManager.SignInAsync(user, false);
 					return RedirectToPage("Index");
 				}
 				foreach (var error in result.Errors)
